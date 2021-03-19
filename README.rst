@@ -2,6 +2,17 @@
 DNS Amplification Attack
 ########################
 
+* Contents:
+
+  + 1 `DNS Amplification Attack`_
+
+    + 1.1 `About The Project`_
+    + 1.2 `Getting Started`_
+    + 1.3 Screenshots_
+    + 1.4 License_
+    + 1.5 Contact_
+    + 1.6 Acknowledgments_
+
 About The Project
 =================
 
@@ -22,9 +33,9 @@ After that, let's begin building the executable files:
 
 .. code-block:: bash
 
-   root@build:~# git clone XXX
-   root@build:~# cd XXX
-   root@build:~/XXX# ./configure && make
+   root@build:~# git clone https://github.com/GoldenMean58/dns_amplification_attack
+   root@build:~# cd dns_amplification_attack
+   root@build:~/dns_amplification_attack# ./configure && make
 
 And you will have **dns_attacker** and **dns_server** in the *src* directory. They do what as their names show.
 
