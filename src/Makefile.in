@@ -99,13 +99,18 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_dns_attacker_OBJECTS = dns_attacker.$(OBJEXT) utils.$(OBJEXT)
+am_dns_attacker_OBJECTS = dns_attacker-dns_attacker.$(OBJEXT) \
+	dns_attacker-utils.$(OBJEXT)
 dns_attacker_OBJECTS = $(am_dns_attacker_OBJECTS)
 dns_attacker_LDADD = $(LDADD)
-am_dns_server_OBJECTS = dns_server.$(OBJEXT) utils.$(OBJEXT) \
-	dns.$(OBJEXT)
+dns_attacker_LINK = $(CXXLD) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+am_dns_server_OBJECTS = dns_server-dns_server.$(OBJEXT) \
+	dns_server-utils.$(OBJEXT) dns_server-dns.$(OBJEXT)
 dns_server_OBJECTS = $(am_dns_server_OBJECTS)
 dns_server_LDADD = $(LDADD)
+dns_server_LINK = $(CXXLD) $(dns_server_CXXFLAGS) $(CXXFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -121,9 +126,16 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/dns.Po ./$(DEPDIR)/dns_attacker.Po \
-	./$(DEPDIR)/dns_server.Po ./$(DEPDIR)/utils.Po
+am__depfiles_remade = ./$(DEPDIR)/dns_attacker-dns_attacker.Po \
+	./$(DEPDIR)/dns_attacker-utils.Po \
+	./$(DEPDIR)/dns_server-dns.Po \
+	./$(DEPDIR)/dns_server-dns_server.Po \
+	./$(DEPDIR)/dns_server-utils.Po
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 AM_V_CXX = $(am__v_CXX_@AM_V@)
@@ -252,6 +264,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 dns_attacker_SOURCES = dns_attacker.cpp utils.cpp
 dns_server_SOURCES = dns_server.cpp utils.cpp dns.cpp
+dns_server_CXXFLAGS = -lpthread
+dns_attacker_CXXFLAGS = -lpthread
 all: all-am
 
 .SUFFIXES:
@@ -330,11 +344,11 @@ clean-binPROGRAMS:
 
 dns_attacker$(EXEEXT): $(dns_attacker_OBJECTS) $(dns_attacker_DEPENDENCIES) $(EXTRA_dns_attacker_DEPENDENCIES) 
 	@rm -f dns_attacker$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(dns_attacker_OBJECTS) $(dns_attacker_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(dns_attacker_LINK) $(dns_attacker_OBJECTS) $(dns_attacker_LDADD) $(LIBS)
 
 dns_server$(EXEEXT): $(dns_server_OBJECTS) $(dns_server_DEPENDENCIES) $(EXTRA_dns_server_DEPENDENCIES) 
 	@rm -f dns_server$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(dns_server_OBJECTS) $(dns_server_LDADD) $(LIBS)
+	$(AM_V_CXXLD)$(dns_server_LINK) $(dns_server_OBJECTS) $(dns_server_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -342,10 +356,11 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_attacker.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_server.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utils.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_attacker-dns_attacker.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_attacker-utils.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_server-dns.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_server-dns_server.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dns_server-utils.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -366,6 +381,76 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+dns_attacker-dns_attacker.o: dns_attacker.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -MT dns_attacker-dns_attacker.o -MD -MP -MF $(DEPDIR)/dns_attacker-dns_attacker.Tpo -c -o dns_attacker-dns_attacker.o `test -f 'dns_attacker.cpp' || echo '$(srcdir)/'`dns_attacker.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_attacker-dns_attacker.Tpo $(DEPDIR)/dns_attacker-dns_attacker.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dns_attacker.cpp' object='dns_attacker-dns_attacker.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -c -o dns_attacker-dns_attacker.o `test -f 'dns_attacker.cpp' || echo '$(srcdir)/'`dns_attacker.cpp
+
+dns_attacker-dns_attacker.obj: dns_attacker.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -MT dns_attacker-dns_attacker.obj -MD -MP -MF $(DEPDIR)/dns_attacker-dns_attacker.Tpo -c -o dns_attacker-dns_attacker.obj `if test -f 'dns_attacker.cpp'; then $(CYGPATH_W) 'dns_attacker.cpp'; else $(CYGPATH_W) '$(srcdir)/dns_attacker.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_attacker-dns_attacker.Tpo $(DEPDIR)/dns_attacker-dns_attacker.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dns_attacker.cpp' object='dns_attacker-dns_attacker.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -c -o dns_attacker-dns_attacker.obj `if test -f 'dns_attacker.cpp'; then $(CYGPATH_W) 'dns_attacker.cpp'; else $(CYGPATH_W) '$(srcdir)/dns_attacker.cpp'; fi`
+
+dns_attacker-utils.o: utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -MT dns_attacker-utils.o -MD -MP -MF $(DEPDIR)/dns_attacker-utils.Tpo -c -o dns_attacker-utils.o `test -f 'utils.cpp' || echo '$(srcdir)/'`utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_attacker-utils.Tpo $(DEPDIR)/dns_attacker-utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='utils.cpp' object='dns_attacker-utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -c -o dns_attacker-utils.o `test -f 'utils.cpp' || echo '$(srcdir)/'`utils.cpp
+
+dns_attacker-utils.obj: utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -MT dns_attacker-utils.obj -MD -MP -MF $(DEPDIR)/dns_attacker-utils.Tpo -c -o dns_attacker-utils.obj `if test -f 'utils.cpp'; then $(CYGPATH_W) 'utils.cpp'; else $(CYGPATH_W) '$(srcdir)/utils.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_attacker-utils.Tpo $(DEPDIR)/dns_attacker-utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='utils.cpp' object='dns_attacker-utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_attacker_CXXFLAGS) $(CXXFLAGS) -c -o dns_attacker-utils.obj `if test -f 'utils.cpp'; then $(CYGPATH_W) 'utils.cpp'; else $(CYGPATH_W) '$(srcdir)/utils.cpp'; fi`
+
+dns_server-dns_server.o: dns_server.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -MT dns_server-dns_server.o -MD -MP -MF $(DEPDIR)/dns_server-dns_server.Tpo -c -o dns_server-dns_server.o `test -f 'dns_server.cpp' || echo '$(srcdir)/'`dns_server.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_server-dns_server.Tpo $(DEPDIR)/dns_server-dns_server.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dns_server.cpp' object='dns_server-dns_server.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -c -o dns_server-dns_server.o `test -f 'dns_server.cpp' || echo '$(srcdir)/'`dns_server.cpp
+
+dns_server-dns_server.obj: dns_server.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -MT dns_server-dns_server.obj -MD -MP -MF $(DEPDIR)/dns_server-dns_server.Tpo -c -o dns_server-dns_server.obj `if test -f 'dns_server.cpp'; then $(CYGPATH_W) 'dns_server.cpp'; else $(CYGPATH_W) '$(srcdir)/dns_server.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_server-dns_server.Tpo $(DEPDIR)/dns_server-dns_server.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dns_server.cpp' object='dns_server-dns_server.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -c -o dns_server-dns_server.obj `if test -f 'dns_server.cpp'; then $(CYGPATH_W) 'dns_server.cpp'; else $(CYGPATH_W) '$(srcdir)/dns_server.cpp'; fi`
+
+dns_server-utils.o: utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -MT dns_server-utils.o -MD -MP -MF $(DEPDIR)/dns_server-utils.Tpo -c -o dns_server-utils.o `test -f 'utils.cpp' || echo '$(srcdir)/'`utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_server-utils.Tpo $(DEPDIR)/dns_server-utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='utils.cpp' object='dns_server-utils.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -c -o dns_server-utils.o `test -f 'utils.cpp' || echo '$(srcdir)/'`utils.cpp
+
+dns_server-utils.obj: utils.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -MT dns_server-utils.obj -MD -MP -MF $(DEPDIR)/dns_server-utils.Tpo -c -o dns_server-utils.obj `if test -f 'utils.cpp'; then $(CYGPATH_W) 'utils.cpp'; else $(CYGPATH_W) '$(srcdir)/utils.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_server-utils.Tpo $(DEPDIR)/dns_server-utils.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='utils.cpp' object='dns_server-utils.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -c -o dns_server-utils.obj `if test -f 'utils.cpp'; then $(CYGPATH_W) 'utils.cpp'; else $(CYGPATH_W) '$(srcdir)/utils.cpp'; fi`
+
+dns_server-dns.o: dns.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -MT dns_server-dns.o -MD -MP -MF $(DEPDIR)/dns_server-dns.Tpo -c -o dns_server-dns.o `test -f 'dns.cpp' || echo '$(srcdir)/'`dns.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_server-dns.Tpo $(DEPDIR)/dns_server-dns.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dns.cpp' object='dns_server-dns.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -c -o dns_server-dns.o `test -f 'dns.cpp' || echo '$(srcdir)/'`dns.cpp
+
+dns_server-dns.obj: dns.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -MT dns_server-dns.obj -MD -MP -MF $(DEPDIR)/dns_server-dns.Tpo -c -o dns_server-dns.obj `if test -f 'dns.cpp'; then $(CYGPATH_W) 'dns.cpp'; else $(CYGPATH_W) '$(srcdir)/dns.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/dns_server-dns.Tpo $(DEPDIR)/dns_server-dns.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='dns.cpp' object='dns_server-dns.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(dns_server_CXXFLAGS) $(CXXFLAGS) -c -o dns_server-dns.obj `if test -f 'dns.cpp'; then $(CYGPATH_W) 'dns.cpp'; else $(CYGPATH_W) '$(srcdir)/dns.cpp'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -494,10 +579,11 @@ clean: clean-am
 clean-am: clean-binPROGRAMS clean-generic mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/dns.Po
-	-rm -f ./$(DEPDIR)/dns_attacker.Po
-	-rm -f ./$(DEPDIR)/dns_server.Po
-	-rm -f ./$(DEPDIR)/utils.Po
+		-rm -f ./$(DEPDIR)/dns_attacker-dns_attacker.Po
+	-rm -f ./$(DEPDIR)/dns_attacker-utils.Po
+	-rm -f ./$(DEPDIR)/dns_server-dns.Po
+	-rm -f ./$(DEPDIR)/dns_server-dns_server.Po
+	-rm -f ./$(DEPDIR)/dns_server-utils.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -543,10 +629,11 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/dns.Po
-	-rm -f ./$(DEPDIR)/dns_attacker.Po
-	-rm -f ./$(DEPDIR)/dns_server.Po
-	-rm -f ./$(DEPDIR)/utils.Po
+		-rm -f ./$(DEPDIR)/dns_attacker-dns_attacker.Po
+	-rm -f ./$(DEPDIR)/dns_attacker-utils.Po
+	-rm -f ./$(DEPDIR)/dns_server-dns.Po
+	-rm -f ./$(DEPDIR)/dns_server-dns_server.Po
+	-rm -f ./$(DEPDIR)/dns_server-utils.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
