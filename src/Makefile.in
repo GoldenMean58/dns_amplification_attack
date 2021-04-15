@@ -264,8 +264,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 dns_attacker_SOURCES = dns_attacker.cpp utils.cpp
 dns_server_SOURCES = dns_server.cpp utils.cpp dns.cpp
-dns_server_CXXFLAGS = -lpthread
-dns_attacker_CXXFLAGS = -lpthread
+dns_server_CXXFLAGS = -pthread
+dns_attacker_CXXFLAGS = -pthread
 all: all-am
 
 .SUFFIXES:
