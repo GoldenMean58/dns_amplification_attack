@@ -1,5 +1,5 @@
 #include "dns.h"
-#include "utils.h"
+#include "my_utils.h"
 #include <iostream>
 #include <pthread.h>
 #include <string>
